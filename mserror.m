@@ -1,0 +1,1 @@
+error([newline mfilename ': ' newline '<XXX>' newline]);
