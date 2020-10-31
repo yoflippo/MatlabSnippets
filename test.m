@@ -39,9 +39,12 @@ end
 function runTests(testCase)
 localfunctionsVar = localfunctions;
 if not(isempty(localfunctionsVar))
-    for nT = 1:length(localfunctionsVar)-3
+    for nT = 1:length(localfunctionsVar)
         currentFunction = localfunctionsVar{nT};
-        currentFunction(testCase);
+        currentFunctionName = functions(currentFunction).function;
+        if isUnitTestMethod(currentFunctionName)
+            currentFunction(testCase);
+        end
     end
     disp([mfilename ' Tests runned succesfull']);
 else
@@ -49,11 +52,17 @@ else
 end
 end
 
+function bl = isUnitTestMethod(currentFunctionName)
+bl = contains(currentFunctionName,'test','IgnoreCase',true) && ...
+not(isequal(currentFunctionName,'runTests')) && ...
+not(contains(currentFunctionName,'isUnitTestMethod'));
+end
+
 function isError(infoTxt)
 error([newline mfilename ': ' newline blanks(30) infoTxt ': LOOK HERE' newline]);
 end
 
 function name = nameCaller()
-    stack = dbstack;
-    name = stack(2).name;
+stack = dbstack;
+name = stack(2).name;
 end
